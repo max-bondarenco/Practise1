@@ -26,6 +26,20 @@
       </Field>
     </template>
 
+    <template v-if="method === 'tms'">
+      <Field name="key" v-slot="{ field, errorMessage, errors }">
+        <label for="tms-key-input">
+          Key can be a list of comma separated numbers or any string
+        </label>
+        <input
+          id="tms-key-input"
+          type="text"
+          v-bind="field"
+          placeholder="Enter key:" />
+        <div class="error" v-if="errors.length">{{ errorMessage }}</div>
+      </Field>
+    </template>
+
     <div class="buttons">
       <button type="submit">Proceed</button>
       <button @click="handleSave" type="button">Save file</button>

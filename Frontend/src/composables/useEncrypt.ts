@@ -27,6 +27,29 @@ export const useEncrypt = () => {
           .required('Key is required')
           .min(0, 'Key must not be negative')
       });
+    } else if (method === 'tms') {
+      schema = schema.shape({
+        key: yup
+          .string()
+          .required('Key is required')
+          .test(
+            'is-valid-trithemius',
+            'Key must be two/three numbers or a string shorter than content',
+            function (value) {
+              if (!value) return false;
+              const content = this.parent.content || '';
+
+              const parts = value
+                .split(',')
+                .map((p) => p.trim().replace(/\s+/gi, ' '));
+              if (parts.length === 2 || parts.length === 3) {
+                return parts.every((p) => /^-?\d+$/.test(p));
+              }
+
+              return value.length <= content.length;
+            }
+          )
+      });
     }
 
     return schema;
