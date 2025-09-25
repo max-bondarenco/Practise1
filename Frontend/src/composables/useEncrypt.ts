@@ -50,6 +50,24 @@ export const useEncrypt = () => {
             }
           )
       });
+    } else if (method === 'boo') {
+      schema = schema.shape({
+        key: yup.string().required('Poem is required'),
+        rows: yup
+          .number()
+          .optional()
+          .min(1, 'Matrix should have at least one row'),
+        cols: yup
+          .number()
+          .optional()
+          .min(1, 'Matrix should have at least one column'),
+        filler: yup
+          .string()
+          .optional()
+          .default(' ')
+          .min(0)
+          .max(1, 'Filler symbol must be a singular character')
+      });
     }
 
     return schema;

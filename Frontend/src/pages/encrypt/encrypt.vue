@@ -40,6 +40,31 @@
       </Field>
     </template>
 
+    <template v-if="method === 'boo'">
+      <Field name="key" v-slot="{ field, errorMessage, errors }">
+        <textarea rows="10" v-bind="field" placeholder="Enter your poem:" />
+        <div class="error" v-if="errors.length">{{ errorMessage }}</div>
+      </Field>
+
+      <Field name="rows" v-slot="{ field, errorMessage, errors }">
+        <input type="number" v-bind="field" placeholder="Matrix rows:" />
+        <div class="error" v-if="errors.length">{{ errorMessage }}</div>
+      </Field>
+
+      <Field name="cols" v-slot="{ field, errorMessage, errors }">
+        <input type="number" v-bind="field" placeholder="Matrix cols:" />
+        <div class="error" v-if="errors.length">{{ errorMessage }}</div>
+      </Field>
+
+      <Field name="filler" v-slot="{ field, errorMessage, errors }">
+        <input
+          type="text"
+          v-bind="field"
+          placeholder="Filler symbol (if poem is smaller than matrix):" />
+        <div class="error" v-if="errors.length">{{ errorMessage }}</div>
+      </Field>
+    </template>
+
     <div class="buttons">
       <button type="submit">Proceed</button>
       <button @click="handleSave" type="button">Save file</button>
