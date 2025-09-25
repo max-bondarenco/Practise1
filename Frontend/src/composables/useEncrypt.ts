@@ -1,0 +1,56 @@
+import { useRoute, useRouter } from 'vue-router';
+import { useFileStore, type IFile } from '../store/file.store';
+import * as yup from 'yup';
+import { computed } from 'vue';
+import type { SubmissionHandler } from 'vee-validate';
+import { useCryptStore } from '../store/crypt.store';
+
+export const useEncrypt = () => {
+  const route = useRoute();
+  const router = useRouter();
+  const cryptStore = useCryptStore();
+  const fileStore = useFileStore();
+  const file = route.meta.file as IFile;
+  const method = route.params.method;
+
+  const validationSchema = computed(() => {
+    let schema = yup.object().shape({
+      content: yup.string().optional().default(''),
+      method: yup.string().required(),
+      operation: yup.string().required('Select operation type')
+    });
+
+    if (method === 'csr') {
+      schema = schema.shape({
+        key: yup
+          .number()
+          .required('Key is required')
+          .min(0, 'Key must not be negative')
+      });
+    }
+
+    return schema;
+  });
+
+  const handleSubmit: SubmissionHandler = async (values) => {
+    const newContent = await cryptStore.encryptFile(values);
+    file.content = newContent;
+  };
+
+  const handleSave = async () => {
+    await fileStore.updateFile(file.id, {
+      name: file.name,
+      content: file.content
+    });
+
+    router.push({ name: 'file-list' });
+  };
+
+  return {
+    method,
+    file,
+    validationSchema,
+    handleSubmit,
+    handleSave
+  };
+};
