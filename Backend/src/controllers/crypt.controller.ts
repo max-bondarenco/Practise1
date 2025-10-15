@@ -2,17 +2,20 @@ import { NextFunction, Request, Response } from 'express';
 import { decryptCaesar, encryptCaesar } from '../crypts/caesar.js';
 import { decryptTrithemius, encryptTrithemius } from '../crypts/trithemius.js';
 import { decryptBook, encryptBook } from '../crypts/book.js';
+import { decryptGamma, encryptGamma } from '../crypts/gamma.js';
 
 const CYPHERS = [
   { name: 'Caesar', val: 'csr' },
   { name: 'Trithemius', val: 'tms' },
-  { name: 'Book', val: 'boo' }
+  { name: 'Book', val: 'boo' },
+  { name: 'Gamma', val: 'gam' }
 ];
 
 const mapping: Record<string, any> = {
   csr: { enc: encryptCaesar, dec: decryptCaesar },
   tms: { enc: encryptTrithemius, dec: decryptTrithemius },
-  boo: { enc: encryptBook, dec: decryptBook }
+  boo: { enc: encryptBook, dec: decryptBook },
+  gam: { enc: encryptGamma, dec: decryptGamma }
 };
 
 export const getAllCrypts = async (

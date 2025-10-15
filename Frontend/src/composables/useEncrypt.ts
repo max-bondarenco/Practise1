@@ -68,6 +68,10 @@ export const useEncrypt = () => {
           .min(0)
           .max(1, 'Filler symbol must be a singular character')
       });
+    } else if (method === 'gam') {
+      schema = schema.shape({
+        key: yup.string().required('Key is required')
+      });
     }
 
     return schema;

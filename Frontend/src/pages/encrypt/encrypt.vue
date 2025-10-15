@@ -65,6 +65,16 @@
       </Field>
     </template>
 
+    <template v-if="method === 'gam'">
+      <Field name="key" v-slot="{ field, errorMessage, errors }">
+        <input
+          type="string"
+          v-bind="field"
+          placeholder="Enter your key (not a gamma):" />
+        <div class="error" v-if="errors.length">{{ errorMessage }}</div>
+      </Field>
+    </template>
+
     <div class="buttons">
       <button type="submit">Proceed</button>
       <button @click="handleSave" type="button">Save file</button>
