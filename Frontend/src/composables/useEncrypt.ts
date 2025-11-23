@@ -78,8 +78,19 @@ export const useEncrypt = () => {
   });
 
   const handleSubmit: SubmissionHandler = async (values) => {
-    const newContent = await cryptStore.encryptFile(values);
-    file.content = newContent;
+    try {
+      if (values.operation === 'key') {
+        const key: any = await cryptStore.keygen(values);
+        alert(
+          `Your public key is ${key.publicKey}\nYour private key is ${key.privateKey}`
+        );
+      } else {
+        const newContent = await cryptStore.encryptFile(values);
+        file.content = newContent;
+      }
+    } catch (err: any) {
+      alert(err.response.data.msg);
+    }
   };
 
   const handleSave = async () => {

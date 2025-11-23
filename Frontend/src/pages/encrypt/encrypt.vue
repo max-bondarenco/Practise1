@@ -1,5 +1,8 @@
 <template>
-  <Form @submit="handleSubmit" :validation-schema="validationSchema">
+  <Form
+    v-slot="{ values }"
+    @submit="handleSubmit"
+    :validation-schema="validationSchema">
     <Field v-show="false" v-model="method" name="method"></Field>
 
     <Field name="operation" v-slot="{ field, errorMessage, errors }">
@@ -7,11 +10,13 @@
         <option hidden value="">Select operation type</option>
         <option value="enc">Encrypt</option>
         <option value="dec">Decrypt</option>
+        <option value="key" v-if="method === 'bck'">Keygen</option>
       </select>
       <div class="error" v-if="errors.length">{{ errorMessage }}</div>
     </Field>
 
     <Field
+      v-if="['dec', 'enc'].includes(values.operation)"
       v-model="file.content"
       name="content"
       v-slot="{ field, errorMessage, errors }">
@@ -73,6 +78,69 @@
           placeholder="Enter your key (not a gamma):" />
         <div class="error" v-if="errors.length">{{ errorMessage }}</div>
       </Field>
+    </template>
+
+    <template v-if="method === 'bck'">
+      <Field
+        v-if="values.operation === 'enc'"
+        name="pbKey"
+        v-slot="{ field, errorMessage, errors }">
+        <input
+          type="string"
+          v-bind="field"
+          placeholder="Enter your public key (coma separated values):" />
+        <div class="error" v-if="errors.length">{{ errorMessage }}</div>
+      </Field>
+
+      <template v-if="values.operation === 'dec'">
+        <Field name="prKey" v-slot="{ field, errorMessage, errors }">
+          <input
+            type="string"
+            v-bind="field"
+            placeholder="Enter your private key (coma separated values):" />
+          <div class="error" v-if="errors.length">{{ errorMessage }}</div>
+        </Field>
+
+        <Field name="t" v-slot="{ field, errorMessage, errors }">
+          <input type="string" v-bind="field" placeholder="Enter t:" />
+          <div class="error" v-if="errors.length">{{ errorMessage }}</div>
+        </Field>
+
+        <Field name="q" v-slot="{ field, errorMessage, errors }">
+          <input type="string" v-bind="field" placeholder="Enter q:" />
+          <div class="error" v-if="errors.length">{{ errorMessage }}</div>
+        </Field>
+      </template>
+
+      <template v-if="values.operation === 'key'">
+        <Field name="n" v-slot="{ field, errorMessage, errors }">
+          <input
+            :disabled="!!values.prKey"
+            type="string"
+            v-bind="field"
+            placeholder="Enter key length (disables custom key input):" />
+          <div class="error" v-if="errors.length">{{ errorMessage }}</div>
+        </Field>
+
+        <Field name="prKey" v-slot="{ field, errorMessage, errors }">
+          <input
+            :disabled="!!values.n"
+            type="string"
+            v-bind="field"
+            placeholder="Enter your private key (coma separated values):" />
+          <div class="error" v-if="errors.length">{{ errorMessage }}</div>
+        </Field>
+
+        <Field name="t" v-slot="{ field, errorMessage, errors }">
+          <input type="string" v-bind="field" placeholder="Enter t:" />
+          <div class="error" v-if="errors.length">{{ errorMessage }}</div>
+        </Field>
+
+        <Field name="q" v-slot="{ field, errorMessage, errors }">
+          <input type="string" v-bind="field" placeholder="Enter q:" />
+          <div class="error" v-if="errors.length">{{ errorMessage }}</div>
+        </Field>
+      </template>
     </template>
 
     <div class="buttons">

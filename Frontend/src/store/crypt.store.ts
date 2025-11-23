@@ -25,6 +25,15 @@ export const useCryptStore = defineStore('crypts', {
       );
 
       return newContent;
+    },
+
+    async keygen(data: any) {
+      const { data: result } = await axios.post<string>(
+        'http://localhost:3000/keygen',
+        data
+      );
+
+      return result;
     }
   }
 });
